@@ -65,11 +65,38 @@ const students= [
         }
         resultTd.append(resultInner);
 
-        tr.append(orderTh, nameTd, groupTd, resultTd)
+        const delTd = document.createElement("td");
+      const delButton = document.createElement("button");
+      const editButton = document.createElement("button");
+      delButton.innerHTML = "Delete";
+      editButton.innerHTML = "Edit";
+      editButton.classList.add("btn", "btn-warning", "mx-2")
+      delButton.classList.add("btn", "btn-danger");
+      delButton.addEventListener("click", function(e) {
+          e.stopPropagation();
+          console.log(student.id);
+          students.splice(index, 1);
 
+          renderStudents(students)
+        })
+
+        editButton.setAttribute("data-bs-toggle", "modal")
+        editButton.setAttribute("data-bs-target", "#editModal")
+
+        editButton.onclick = (e) => {
+          e.stopPropagation();
+          const nameInput = document.getElementById("student-name");
+
+          nameInput.value = student.name
+        }
+        delTd.append(editButton, delButton);
+
+        tr.dataset.identifierId =student.id
+        tr.append(orderTh, nameTd, groupTd, resultTd, delTd);
         studentsTableBody.append(tr)
-    })
+      })
     }
+    
      renderStudents(students)
 
 
@@ -79,4 +106,18 @@ const students= [
         renderStudents(filteredStudents)
      })
 
+     studentsTableBody.addEventListener("click", (e) => {
+        const student = students.find(student => student.id === +e.target.parentNode.dataset.identifierId);
+      
+        alert(student.name + " " + student.group)
+      })
+      
+      document.getElementById("input_group").addEventListener('input', function (e) {
+        const searchGroupValue = e.target.value;
+      
+        const filteredGroupStudents = students.filter(student => student.group.toLowerCase().includes(searchGroupValue.toLowerCase()));
+      
+        renderStudents(filteredGroupStudents);
+      
+      })
    
